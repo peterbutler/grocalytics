@@ -19,6 +19,12 @@ mongoose.connect('mongodb://localhost/groceries');
 // Index Route
 app.get('/', routes.index);
 
+// Get Comments
+app.get('/items/', routes.getComments);
+
+// Post Comments
+app.post('/comments/', routes.postComments);
+
 // Set /public as our static content dir
 app.use("/", express.static(__dirname + "/public/"));
 
