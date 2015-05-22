@@ -23,7 +23,7 @@ app.get('/', routes.index);
 app.get('/items/', routes.getComments);
 
 // Post Comments
-app.post('/comments/', routes.postComments);
+app.post('/items/', routes.postComments);
 
 // Set /public as our static content dir
 app.use("/", express.static(__dirname + "/public/"));

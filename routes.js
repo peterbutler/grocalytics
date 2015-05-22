@@ -9,8 +9,26 @@ module.exports = {
        });
   },
 
-  getComments: function(req, res) { res.json([{"author": "Pete Hunt", "text": "This is one comment"}, {"author": "Jordan Walke", "text": "This is *another* comment"} ]
-);},
+  getComments: function(req, res) {
+	  response = [
+		  {
+			  'receiptText' : 'PRODUCT1',
+			  'product'     : 'Cheddar Cheese',
+			  'price'       : '5.99',
+			  'discount'    : '1.00',
+			  'tags'        : 'cheese, dinner',
+		  },
+		  {
+			  'receiptText' : 'PRODUCT2',
+			  'product'     : 'Wheat Bread',
+			  'price'       : '3.99',
+			  'discount'    : '0',
+			  'tags'        : 'bread, lunch',
+		  }
+
+	  ]
+	  res.json( response );
+	},
 
   postComments: function( req, res) {},
 }
