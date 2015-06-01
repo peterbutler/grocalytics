@@ -43,7 +43,6 @@ var ItemForm = React.createClass({
 		var discount    = React.findDOMNode(this.refs.discount).value.trim();
 		var tags        = React.findDOMNode(this.refs.tags).value.trim();
 
-		console.log( receiptText );
 		this.props.onItemSubmit({
 			receiptText: receiptText,
 			product: product,
@@ -62,11 +61,11 @@ var ItemForm = React.createClass({
 	render: function() {
 		return (
 			<form className="itemForm" onSubmit={this.handleSubmit}>
-				<input type="text" placeholder="Receipt Text" ref="receiptText" />
-				<input type="text" placeholder="Product" ref="product" />
-				<input type="text" placeholder="Price" ref="price" />
-				<input type="text" placeholder="Discount" ref="discount" />
-				<input type="text" placeholder="Tags" ref="tags" />
+				<input type="text" placeholder="Receipt Text" ref="receiptText" name="receiptText"/>
+				<input type="text" placeholder="Product"      ref="product" name="product"/>
+				<input type="text" placeholder="Price"        ref="price" name="price"/>
+				<input type="text" placeholder="Discount"     ref="discount" name="discount" />
+				<input type="text" placeholder="Tags" ref="tags" name="tags" />
 				<input type="submit" value="Post" />
 			</form>
 		);
