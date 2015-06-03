@@ -17,6 +17,23 @@ app.engine('handlebars', exphbs({ defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 // Connect to our mongo database
+
+var db = mongoose.connection;
+
+db.on('error', console.error);
+db.once('open', function() {
+  // Create your schemas and models here.
+  var ItemSchema = new mongoose.Schema({
+    receiptText: { type: String }
+  , product: String
+  , price: Number
+  , discount: Number
+  , tags: String
+  });
+
+  Item = mongoose.model('Item', ItemSchema);
+});
+
 mongoose.connect('mongodb://localhost/groceries');
 
 // Set /public as our static content dir

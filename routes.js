@@ -30,5 +30,20 @@ module.exports = {
 	  res.json( response );
 	},
 
-  postComments: function( req, res) {},
+  postItems: function( req, res) {
+    console.dir( req.body );
+    var newItem = new Item({
+      receiptText: req.body.receiptText
+    , product: req.body.product
+    , price: req.body.price
+    , discount: req.body.discount
+    , tags: req.body.tags
+    });
+
+    newItem.save(function(err, item) {
+      if (err) return console.error(err);
+      console.dir(item);
+    });
+    res.json( {'response': 'response here'})
+  },
 }
