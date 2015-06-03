@@ -1,15 +1,15 @@
 <!-- index.html -->
 <html>
-  <head>
-    <title>Hello React</title>
-    <script src="/js/react-with-addons.js"></script>
-    <script src="/js/JSXTransformer.js"></script>
-    <script src="/js/jquery.js"></script>
-  </head>
-  <body>
-    <div id="trip"></div>
-    <div id="content"></div>
-    <script type="text/jsx">
+	<head>
+		<title>Hello React</title>
+		<script src="/js/react-with-addons.js"></script>
+		<script src="/js/JSXTransformer.js"></script>
+		<script src="/js/jquery.js"></script>
+	</head>
+	<body>
+		<div id="trip"></div>
+		<div id="content"></div>
+		<script type="text/jsx">
 
 
 var ItemList = React.createClass({
@@ -17,11 +17,11 @@ var ItemList = React.createClass({
 		var itemNodes = this.props.data.map(function (item) {
 			return (
 				<Item receiptText={item.receiptText}
-					  product={item.product}
-					  price={item.price}
-					  discount={item.discount}
-					  tags={item.tags}
-					  >
+						product={item.product}
+						price={item.price}
+						discount={item.discount}
+						tags={item.tags}
+						>
 				</Item>
 				);
 			});
@@ -37,10 +37,10 @@ var ItemForm = React.createClass({
 	handleSubmit: function(e) {
 		e.preventDefault();
 		var receiptText = React.findDOMNode(this.refs.receiptText).value.trim();
-		var product     = React.findDOMNode(this.refs.product).value.trim();
-		var price       = React.findDOMNode(this.refs.price).value.trim();
-		var discount    = React.findDOMNode(this.refs.discount).value.trim();
-		var tags        = React.findDOMNode(this.refs.tags).value.trim();
+		var product		 = React.findDOMNode(this.refs.product).value.trim();
+		var price			 = React.findDOMNode(this.refs.price).value.trim();
+		var discount		= React.findDOMNode(this.refs.discount).value.trim();
+		var tags				= React.findDOMNode(this.refs.tags).value.trim();
 
 		this.props.onItemSubmit({
 			receiptText: receiptText,
@@ -61,9 +61,9 @@ var ItemForm = React.createClass({
 		return (
 			<form className="itemForm" onSubmit={this.handleSubmit}>
 				<input type="text" placeholder="Receipt Text" ref="receiptText" name="receiptText"/>
-				<input type="text" placeholder="Product"      ref="product" name="product"/>
-				<input type="text" placeholder="Price"        ref="price" name="price"/>
-				<input type="text" placeholder="Discount"     ref="discount" name="discount" />
+				<input type="text" placeholder="Product"			ref="product" name="product"/>
+				<input type="text" placeholder="Price"				ref="price" name="price"/>
+				<input type="text" placeholder="Discount"		 ref="discount" name="discount" />
 				<input type="text" placeholder="Tags" ref="tags" name="tags" />
 				<input type="submit" value="Post" />
 			</form>
@@ -93,7 +93,7 @@ var ItemBox = React.createClass({
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
-          console.log( "SUCCESSFUL LOAD" );
+					console.log( "SUCCESSFUL LOAD" );
 					console.log( data );
 					this.setState({data: data});
 				}.bind(this),
@@ -109,9 +109,9 @@ var ItemBox = React.createClass({
 		type: 'POST',
 		data: item,
 		success: function(data) {
-        this.loadItemsFromServer();
+				this.loadItemsFromServer();
 				this.setState({data: data});
-        this.render();
+				this.render();
 			}.bind(this),
 			error: function(xhr, status, err) {
 				console.error(this.props.url, status, err.toString());
@@ -160,6 +160,6 @@ React.render(
 	document.getElementById('trip')
 );
 
-    </script>
-  </body>
+		</script>
+	</body>
 </html>
