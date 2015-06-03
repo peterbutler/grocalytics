@@ -43,7 +43,7 @@ app.use("/", express.static(__dirname + "/public/"));
 app.get('/', routes.index);
 
 // Get Comments
-app.get('/items/', routes.getComments);
+app.get('/items/', routes.getItems);
 
 // Post Comments
 app.post('/items/', routes.postItems);

@@ -9,7 +9,7 @@ module.exports = {
        });
   },
 
-  getComments: function(req, res) {
+  getItems: function(req, res) {
 	  response = [
 		  {
 			  'receiptText' : 'PRODUCT1',
