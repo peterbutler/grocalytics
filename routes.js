@@ -10,28 +10,16 @@ module.exports = {
   },
 
   getItems: function(req, res) {
-	  response = [
-		  {
-			  'receiptText' : 'PRODUCT1',
-			  'product'     : 'Cheddar Cheese',
-			  'price'       : '5.99',
-			  'discount'    : '1.00',
-			  'tags'        : 'cheese, dinner',
-		  },
-		  {
-			  'receiptText' : 'PRODUCT2',
-			  'product'     : 'Wheat Bread',
-			  'price'       : '3.99',
-			  'discount'    : '0',
-			  'tags'        : 'bread, lunch',
-		  }
-
-	  ]
-	  res.json( response );
+    Item.find({}, function (err, docs) {
+      response = [];
+      for( var i in docs ){
+        response[i] = docs[i]._doc;
+      }
+      res.json( response );
+    } );
 	},
 
   postItems: function( req, res) {
-    console.dir( req.body );
     var newItem = new Item({
       receiptText: req.body.receiptText
     , product: req.body.product
