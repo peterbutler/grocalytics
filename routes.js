@@ -1,5 +1,5 @@
-var JSX = require('node-jsx').install()
-var React = require('react')
+var JSX = require('node-jsx').install();
+var React = require('react');
 
 
 module.exports = {
@@ -34,7 +34,7 @@ module.exports = {
     });
     res.json({
       'response': 'response here'
-    })
+    });
   },
 
   postTrip: function(req, res) {
@@ -63,7 +63,7 @@ module.exports = {
     });
     res.json({
       'response': 'response here'
-    })
+    });
   },
 
-}
+};
