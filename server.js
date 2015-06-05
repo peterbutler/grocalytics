@@ -32,6 +32,15 @@ db.once('open', function() {
   });
 
   Item = mongoose.model('Item', ItemSchema);
+
+  var StoreSchema = new mongoose.Schema({
+    name: String
+  , location: String
+  });
+
+  Store = mongoose.model('Store', StoreSchema);
+
+
 });
 
 mongoose.connect('mongodb://localhost/groceries');
@@ -48,6 +57,7 @@ app.get('/items/', routes.getItems);
 // Post Comments
 app.post('/items/', routes.postItems);
 
+app.post('/trip/', routes.postTrip);
 
 // Start server
 var server = http.createServer(app).listen(port, function() {

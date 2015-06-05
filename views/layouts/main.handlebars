@@ -4,7 +4,7 @@
 		<title>Hello React</title>
 		<script src="/js/react-with-addons.js"></script>
 		<script src="/js/JSXTransformer.js"></script>
-		<script src="/js/jquery.js"></script>
+    <script src="/js/jquery.js"></script>
 	</head>
 	<body>
 		<div id="trip"></div>
@@ -93,8 +93,6 @@ var ItemBox = React.createClass({
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
-					console.log( "SUCCESSFUL LOAD" );
-					console.log( data );
 					this.setState({data: data});
 				}.bind(this),
 				error: function(xhr, status, err) {
@@ -128,6 +126,7 @@ var ItemBox = React.createClass({
 
 	render: function() {
 		return (
+
 			<div className="itemBox">
 				<h1>Items</h1>
 				<ItemList data={this.state.data} />
@@ -138,22 +137,50 @@ var ItemBox = React.createClass({
 });
 
 var TripBox = React.createClass({
+	handleSubmit: function(e) {
+		e.preventDefault();
+		trip = {
+			storeName: React.findDOMNode(this.refs.storeName).value.trim(),
+			storeLocation: React.findDOMNode(this.refs.storeLocation).value.trim(),
+			tripDate: React.findDOMNode(this.refs.tripDate).value.trim(),
+		}
+
+		$.ajax({
+		url: this.props.url,
+		dataType: 'json',
+		type: 'POST',
+		data: trip,
+		success: function(data) {
+				this.loadItemsFromServer();
+				this.setState({data: data});
+				this.render();
+			}.bind(this),
+			error: function(xhr, status, err) {
+				console.error(this.props.url, status, err.toString());
+			}.bind(this)
+		});
+		return;
+	},
 	render: function() {
 		return (
 			<div className="trip">
+        <form className="tripForm" onSubmit={this.handleSubmit}>
+  				<input type="text" placeholder="Name" ref="storeName" name="storeName"/>
+  				<input type="text" placeholder="Location" ref="storeLocation" name="storeLocation"/>
+  				<input type="text" placeholder="date"			ref="tripDate" name="tripDate"/>
+  				<input type="submit" value="Post" />
+  			</form>
+
 				<h2 className="StoreName">
 					{this.props.name}
 				</h2>
 				<small>{this.props.date}</small>
+        <ItemBox url="items"/>
 			</div>
 		);
 	}
 });
 
-React.render(
-	<ItemBox url="items"/>,
-	document.getElementById('content')
-);
 
 React.render(
 	<TripBox url="trip" name="King Soopers" date="2015-05-21"/>,
