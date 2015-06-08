@@ -44,9 +44,16 @@ db.once('open', function() {
     location: String
   });
 
+
   Store = mongoose.model('Store', StoreSchema);
 
+  var TripSchema = new mongoose.Schema({
+    date: Date,
+    userId: Number,
+    storeId: String,
+  });
 
+  Trip = mongoose.model('Trip', TripSchema);
 });
 
 mongoose.connect('mongodb://localhost/groceries');
@@ -63,6 +70,7 @@ app.get('/items/', routes.getItems);
 // Post Comments
 app.post('/items/', routes.postItems);
 
+app.post('/store/', routes.postStore);
 app.post('/trip/', routes.postTrip);
 
 // Start server
