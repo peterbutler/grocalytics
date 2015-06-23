@@ -31,9 +31,7 @@ module.exports = {
 
     newItem.save(function(err, item) {
       if (err) return console.error(err);
-    });
-    res.json({
-      'response': 'response here'
+      res.json( item );
     });
   },
 
