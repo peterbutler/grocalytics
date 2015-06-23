@@ -1,211 +1,68 @@
-<!-- index.html -->
 <html>
 	<head>
-		<title>Hello React</title>
-		<script src="/js/react-with-addons.js"></script>
-		<script src="/js/JSXTransformer.js"></script>
-    <script src="/js/jquery.js"></script>
+	<script type="text/javascript">
+		function init () {
+		    var itemForm = document.getElementById('item-form');
+		    itemForm.addEventListener( 'submit', handleItemSubmit );
+		}
+
+		function handleItemSubmit( event ){
+			event.preventDefault();
+			var data = {
+				'receiptText': event.target.querySelectorAll('[name=receipt-text]')[0].value,
+				product: event.target.querySelectorAll('[name=product]')[0].value,
+				price: event.target.querySelectorAll('[name=price]')[0].value,
+				discount: event.target.querySelectorAll('[name=discount]')[0].value,
+				tags: event.target.querySelectorAll('[name=tags]')[0].value,
+			};
+
+			makeAjaxRequest( '/items/', data );
+		}
+
+		function makeAjaxRequest( url, data, requestType, async ){
+			if ( typeof async == 'undefined' ){
+				async = true;
+			}
+			if ( typeof requestType == 'undefined' ){
+				requestType = 'POST';
+			}
+
+			var request = new XMLHttpRequest();
+			request.open( requestType, url, async );
+			request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+
+			request.onreadystatechange = function () {
+				if ( request.readyState != 4 || request.status != 200 ) return;
+				console.log(request.responseText);
+			};
+
+			console.log( flattenObject( data ) );
+			request.send( flattenObject( data ) );
+		}
+
+		function flattenObject( data ){
+			console.log( Object.keys( data ) );
+			return '?' +
+	        Object.keys( data ).map( function( key ) {
+	            return encodeURIComponent( key ) + '=' +
+	                encodeURIComponent( data[ key ] );
+	        }).join( '&' );
+		}
+	</script>
 	</head>
-	<body>
-		<div id="trip"></div>
-		<div id="content"></div>
-		<script type="text/jsx">
-
-
-var ItemList = React.createClass({
-	render: function() {
-		var itemNodes = this.props.data.map(function (item) {
-			return (
-				<Item receiptText={item.receiptText}
-						product={item.product}
-						price={item.price}
-						discount={item.discount}
-						tags={item.tags}
-						>
-				</Item>
-				);
-			});
-		return (
-			<div className="itemList">
-				{itemNodes}
-			</div>
-		);
-	}
-});
-
-var ItemForm = React.createClass({
-	handleSubmit: function(e) {
-		e.preventDefault();
-		var receiptText = React.findDOMNode(this.refs.receiptText).value.trim();
-		var product		 = React.findDOMNode(this.refs.product).value.trim();
-		var price			 = React.findDOMNode(this.refs.price).value.trim();
-		var discount		= React.findDOMNode(this.refs.discount).value.trim();
-		var tags				= React.findDOMNode(this.refs.tags).value.trim();
-
-		this.props.onItemSubmit({
-			receiptText: receiptText,
-			product: product,
-			price: price,
-			discount: discount,
-			tags: tags,
-		});
-
-		React.findDOMNode(this.refs.receiptText).value = '';
-		React.findDOMNode(this.refs.product).value = '';
-		React.findDOMNode(this.refs.price).value = '';
-		React.findDOMNode(this.refs.discount).value = '';
-		React.findDOMNode(this.refs.tags).value = '';
-		return;
-	},
-	render: function() {
-		return (
-			<form className="itemForm" onSubmit={this.handleSubmit}>
-				<input type="text" placeholder="Receipt Text" ref="receiptText" name="receiptText"/>
-				<input type="text" placeholder="Product"			ref="product" name="product"/>
-				<input type="text" placeholder="Price"				ref="price" name="price"/>
-				<input type="text" placeholder="Discount"		 ref="discount" name="discount" />
-				<input type="text" placeholder="Tags" ref="tags" name="tags" />
-				<input type="submit" value="Post" />
-			</form>
-		);
-	}
-});
-
-var Item = React.createClass({
-	render: function() {
-		return (
-			<div className="item">
-				{this.props.receiptText}
-				{this.props.product}
-				{this.props.price}
-				{this.props.discount}
-				{this.props.tags}
-			</div>
-		);
-	}
-});
-
-var ItemBox = React.createClass({
-	loadItemsFromServer: function() {
-		$.ajax({
-			url: this.props.url,
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
-					this.setState({data: data});
-				}.bind(this),
-				error: function(xhr, status, err) {
-					console.error(this.props.url, status, err.toString());
-				}.bind(this)
-		});
-	},
-	handleItemSubmit: function(item) {
-		$.ajax({
-		url: this.props.url,
-		dataType: 'json',
-		type: 'POST',
-		data: item,
-		success: function(data) {
-				this.loadItemsFromServer();
-				this.setState({data: data});
-				this.render();
-			}.bind(this),
-			error: function(xhr, status, err) {
-				console.error(this.props.url, status, err.toString());
-			}.bind(this)
-		});
-	},
-
-	getInitialState: function() {
-		return {data: []};
-	},
-	componentDidMount: function() {
-		this.loadItemsFromServer();
-	},
-
-	render: function() {
-		return (
-
-			<div className="itemBox">
-				<h1>Items</h1>
-				<ItemList data={this.state.data} />
-				<ItemForm onItemSubmit={this.handleItemSubmit} />
-			</div>
-		);
-	}
-});
-
-var TripBox = React.createClass({
-	handleSubmit: function(e) {
-		e.preventDefault();
-		store = {
-			storeName: React.findDOMNode(this.refs.storeName).value.trim(),
-			storeLocation: React.findDOMNode(this.refs.storeLocation).value.trim(),
-		}
-		trip = {
-			tripDate: React.findDOMNode(this.refs.tripDate).value.trim(),
-		}
-		// Send store data
-		$.ajax({
-		url: 'store',
-		dataType: 'json',
-		type: 'POST',
-		data: store,
-		success: function(data) {
-				this.setState({data: data});
-				this.render();
-				// If we were successful, save the trip
-				trip.storeId = data._id
-				console.log( trip );
-				$.ajax({
-				url: 'trip',
-				dataType: 'json',
-				type: 'POST',
-				data: trip,
-				success: function(data) {
-						this.setState({data: data});
-						this.render();
-						// If we were successful, save the trip
-						console.log( data );
-
-					}.bind(this),
-					error: function(xhr, status, err) {
-						console.error(this.props.url, status, err.toString());
-					}.bind(this)
-				});
-			}.bind(this),
-			error: function(xhr, status, err) {
-				console.error(this.props.url, status, err.toString());
-			}.bind(this)
-		});
-		return;
-	},
-	render: function() {
-		return (
-			<div className="trip">
-        <form className="tripForm" onSubmit={this.handleSubmit}>
-  				<input type="text" placeholder="Name" ref="storeName" name="storeName"/>
-  				<input type="text" placeholder="Location" ref="storeLocation" name="storeLocation"/>
-  				<input type="text" placeholder="date"			ref="tripDate" name="tripDate"/>
-  				<input type="submit" value="Post" />
-  			</form>
-
-				<h2 className="StoreName">
-					{this.props.name}
-				</h2>
-				<small>{this.props.date}</small>
-        <ItemBox url="items"/>
-			</div>
-		);
-	}
-});
-
-
-React.render(
-	<TripBox name="King Soopers" date="2015-05-21"/>,
-	document.getElementById('trip')
-);
-
-		</script>
+	<body onload="init()">
+		<form id="grocery-trip">
+			<input type="text" placeholder="store-name" name="store-name" id="store-name">
+			<input type="text" placeholder="store-location" name="store-location" id="store-location">
+			<input type="text" placeholder="trip-date" name="trip-date" id="trip-date">
+		</form>
+		<form id="item-form">
+				<input type="text" placeholder="receipt-text" name="receipt-text" id="receipt-text">
+				<input type="text" placeholder="product" name="product" id="product">
+				<input type="text" placeholder="price" name="price" id="price">
+				<input type="text" placeholder="discount" name="discount" id="discount">
+				<input type="text" placeholder="tags" name="tags" id="tags">
+				<input type="submit">
+		</form>
 	</body>
 </html>
