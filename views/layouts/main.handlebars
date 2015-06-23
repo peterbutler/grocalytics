@@ -2,13 +2,43 @@
 	<head>
 	<script type="text/javascript">
 		function init () {
-		    var itemForm = document.getElementById('item-form');
-		    itemForm.addEventListener( 'submit', handleItemSubmit );
+			var itemForm = document.getElementById('item-form');
+			var tripForm = document.getElementById('trip-form');
+				itemForm.addEventListener( 'submit', handleItemSubmit );
+				tripForm.addEventListener( 'submit', handleTripSubmit );
+		}
+
+		function handleTripSubmit( event ){
+			event.preventDefault();
+		}
+
+		function handleTripSubmit( event ){
+			event.preventDefault();
+			var store_data = {
+				storeName:     event.target.querySelectorAll('[name=store-name]')[0].value,
+				storeLocation: event.target.querySelectorAll('[name=store-location]')[0].value,
+			};
+
+			makeAjaxRequest(
+				function( responseCode, response ) {
+					console.log( response );
+					var tripData = {};
+					tripData.storeID = response._id;
+					// Now create the trip
+					tripData.tripDate = document.getElementById( 'trip-date' ).value;
+					console.log( tripData );
+
+					makeAjaxRequest(
+						function( responseCode, response ) {
+							console.log( response )
+						}, '/trip/', tripData );
+				},
+				'/store/', store_data );
 		}
 
 		function handleItemSubmit( event ){
 			event.preventDefault();
-			var data = {
+			var storeData = {
 				'receiptText': event.target.querySelectorAll('[name=receipt-text]')[0].value,
 				product: event.target.querySelectorAll('[name=product]')[0].value,
 				price: event.target.querySelectorAll('[name=price]')[0].value,
@@ -19,7 +49,7 @@
 			makeAjaxRequest( '/items/', data );
 		}
 
-		function makeAjaxRequest( url, data, requestType, async ){
+		function makeAjaxRequest( callback, url, data, requestType, async ){
 			if ( typeof async == 'undefined' ){
 				async = true;
 			}
@@ -33,7 +63,9 @@
 
 			request.onreadystatechange = function () {
 				if ( request.readyState != 4 || request.status != 200 ) return;
+				console.log( request );
 				console.log(request.responseText);
+				callback( request.status, JSON.parse( request.responseText ) );
 			};
 
 			console.log( flattenObject( data ) );
@@ -41,9 +73,7 @@
 		}
 
 		function flattenObject( data ){
-			console.log( Object.keys( data ) );
-			return '?' +
-	        Object.keys( data ).map( function( key ) {
+			return Object.keys( data ).map( function( key ) {
 	            return encodeURIComponent( key ) + '=' +
 	                encodeURIComponent( data[ key ] );
 	        }).join( '&' );
@@ -51,10 +81,11 @@
 	</script>
 	</head>
 	<body onload="init()">
-		<form id="grocery-trip">
+		<form id="trip-form">
 			<input type="text" placeholder="store-name" name="store-name" id="store-name">
 			<input type="text" placeholder="store-location" name="store-location" id="store-location">
 			<input type="text" placeholder="trip-date" name="trip-date" id="trip-date">
+			<input type="submit">
 		</form>
 		<form id="item-form">
 				<input type="text" placeholder="receipt-text" name="receipt-text" id="receipt-text">
