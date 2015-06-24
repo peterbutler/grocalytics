@@ -21,16 +21,20 @@
 
 			makeAjaxRequest(
 				function( responseCode, response ) {
-					console.log( response );
 					var tripData = {};
 					tripData.storeID = response._id;
 					// Now create the trip
 					tripData.tripDate = document.getElementById( 'trip-date' ).value;
-					console.log( tripData );
 
 					makeAjaxRequest(
 						function( responseCode, response ) {
-							console.log( response )
+							// Add tripID as hidden field to item form
+							var input = document.createElement("input");
+							input.type = "hidden";
+							input.name = "trip-id";
+							input.value = response._id;
+							itemForm = document.getElementById( 'item-form' );
+							itemForm.appendChild(input);
 						}, '/trip/', tripData );
 				},
 				'/store/', store_data );
@@ -38,7 +42,7 @@
 
 		function handleItemSubmit( event ){
 			event.preventDefault();
-			var storeData = {
+			var itemData = {
 				'receiptText': event.target.querySelectorAll('[name=receipt-text]')[0].value,
 				product: event.target.querySelectorAll('[name=product]')[0].value,
 				price: event.target.querySelectorAll('[name=price]')[0].value,
@@ -46,10 +50,27 @@
 				tags: event.target.querySelectorAll('[name=tags]')[0].value,
 			};
 
-			makeAjaxRequest( '/items/', data );
+			makeAjaxRequest( function( responseCode, response ) {
+
+			}, '/items/', itemData );
+
+			// Add item to the list
+			var itemElement;
+			var targetElement = document.getElementById( 'item-list' );
+
+			item = document.createElement('tr');
+			item.innerHTML  = '<td>' + itemData.receiptText + '</td>';
+			item.innerHTML += '<td>' + itemData.product + '</td>';
+			item.innerHTML += '<td>' + itemData.price + '</td>';
+			item.innerHTML += '<td>' + itemData.discount + '</td>';
+			item.innerHTML += '<td>' + itemData.tags + '</td>';
+			targetElement.appendChild( item );
+			//
 		}
 
 		function makeAjaxRequest( callback, url, data, requestType, async ){
+			console.log( url );
+			console.log( data );
 			if ( typeof async == 'undefined' ){
 				async = true;
 			}
@@ -87,6 +108,17 @@
 			<input type="text" placeholder="trip-date" name="trip-date" id="trip-date">
 			<input type="submit">
 		</form>
+		<table id="item-list">
+				<th>
+					<tr>
+						<td>Receipt Text</td>
+						<td>Product</td>
+						<td>Price</td>
+						<td>Discount</td>
+						<td>Tags</td>
+				</th>
+		</table>
+
 		<form id="item-form">
 				<input type="text" placeholder="receipt-text" name="receipt-text" id="receipt-text">
 				<input type="text" placeholder="product" name="product" id="product">
