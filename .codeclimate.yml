@@ -1,0 +1,11 @@
+# Save as .codeclimate.yml (note leading .) in project root directory
+languages:
+  Ruby: true
+  JavaScript: true
+  PHP: true
+  Python: true
+ exclude_paths:
+ - "public/js/bootstrap.js"
+ - "public/js/jquery.js"
+ - "public/js/JSXTransformer.js"
+ - "public/js/react-with-addons.js"
